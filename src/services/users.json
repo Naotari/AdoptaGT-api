@@ -1,0 +1,97 @@
+[
+    [
+        {
+            "user_name": "Naotari",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Frandel",
+            "last_name": "Rodriguez",
+            "email": "frandel321@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "admin"
+        },
+        {
+            "user_name": "Moderator1",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Roberto",
+            "last_name": "Lopez",
+            "email": "email_1@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "moderator"
+        },
+        {
+            "user_name": "Moderator2",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Juan",
+            "last_name": "Casatillo",
+            "email": "email_2@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "moderator"
+        },
+        {
+            "user_name": "Moderator3",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Pedro",
+            "last_name": "Montenegro",
+            "email": "email_3@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "moderator"
+        },
+        {
+            "user_name": "User1",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Marta",
+            "last_name": "Parrilla",
+            "email": "email_4@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "user"
+        },
+        {
+            "user_name": "User2",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Rebeca",
+            "last_name": "Armas",
+            "email": "email_5@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "user"
+        },
+        {
+            "user_name": "User3",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Maria",
+            "last_name": "Estrada",
+            "email": "email_6@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "user"
+        },
+        {
+            "user_name": "User4",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Juana",
+            "last_name": "Palencia",
+            "email": "email_7@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "user"
+        },
+        {
+            "user_name": "User5",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Carla",
+            "last_name": "Carrera",
+            "email": "email_8@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "user"
+        },
+        {
+            "user_name": "User6",
+            "image": "https://res.cloudinary.com/dyiymsxec/image/upload/v1677607164/AdoptaGT/Paw_icon.png",
+            "name": "Martin",
+            "last_name": "Perez",
+            "email": "email_9@hotmail.com",
+            "password": "$2b$13$srR.RGMiyIQrtrIRxIxqCuoF7IvI40N9.wkxF9o4JGL/QSQtcVA4C",
+            "role": "user"
+        }
+    ],
+    [
+
+    ]
+]
