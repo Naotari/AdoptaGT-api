@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 import { sequelize } from "../db.js";
 import bcrypt from "bcrypt";
+import cloudinary from "cloudinary"
 
 const User = sequelize.models.User
 const authenticationTokenKey = process.env.AUTHENTICATION_TOKEN_KEY
@@ -242,6 +243,56 @@ const verifyUser_name = async(req, res) => {
     }
 }
 
+const deleteUserImage = async(req, res) => {
+    try {
+        const imageURL = req.body.imageURL
+        let assetName = imageURL.split("/")
+        assetName = assetName[9].split(".")
+        assetName = assetName[0]
+        console.log(assetName);
+        cloudinary.v2.uploader.destroy("AdoptaGT/user_image/" + assetName)
+        .then(result => res.status(201).send(result));
+        // res.status(201).send({message: "Fue elimiando"});
+    } catch (error) {
+        res.status(400).send({
+            error: "There was an error with deleteUserImage",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
+const changeUserImage = async(req, res) => {
+    
+    try {
+
+        const imageURL = req.body.previous_Image_url
+        let assetName = imageURL.split("/")
+        assetName = assetName[9].split(".")
+        assetName = assetName[0]
+        console.log(assetName);
+        cloudinary.v2.uploader.destroy("AdoptaGT/user_image/" + assetName)
+        .then(result => {console.log(result)});
+
+        const ResponseDB = await User.update(
+            {   
+                image: req.body.new_Image_url
+            },
+            {
+                where: { id: req.body.idUser }
+            }
+        )
+        console.log(ResponseDB);
+        res.status(201).send("funciona")
+    } catch (error) {
+        res.status(400).send({
+            error: "There was an error with changeUserImage",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
 
 export {
     getAllUsers,
@@ -249,8 +300,10 @@ export {
     postUser,
     updateUser,
     deleteUser,
+    deleteUserImage,
     loginUser,
     verifyUser,
     verifyEmail,
     verifyUser_name,
+    changeUserImage,
 }

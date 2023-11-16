@@ -20,3 +20,11 @@ server.use("/", routes)
 server.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`)
 })
+
+// const cloudinary = require('cloudinary').v2;
+import cloudinary from "cloudinary"
+const cloudinaryV2 = cloudinary.v2
+// Return "https" URLs by setting secure: true
+cloudinaryV2.config({
+  secure: true
+});
