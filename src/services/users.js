@@ -156,17 +156,17 @@ const loginUser = async(req, res) => {
         const ResponseDB = await User.findOne({ where: { email: email } });
         
         if (!ResponseDB) {
-            res.status(201).send({ error:"User not found"});
+            res.status(200).send({ status: "error", error:"User not found"});
             return;
         }
         bcrypt.compare(password, ResponseDB.password, function(err, result) {
             if (err) {throw err}
             try {
                 if (result === false) {
-                    throw  "the password is not the same";
+                    res.status(200).send({ status: "error", error: "Incorrect password"});
                 } else {
                     const accessToken = jwt.sign(email, authenticationTokenKey)
-                    res.status(201).send({status: "ok", accessToken: accessToken});
+                    res.status(200).send({status: "ok", accessToken: accessToken});
                 }
             } catch (error) {
                 res.status(400).send({
@@ -217,6 +217,58 @@ const verifyEmail = async(req, res) => {
     } catch (error) {
         res.status(400).send({
             error: "There was an error with verifyEmail",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
+const changePassword = async(req, res) => {
+    const {oldPassword, newPassword, idUser} = req.body;
+    try {
+        const ResponseDB = await User.findByPk(idUser, { //Search the user
+            attributes: ['password']
+        });
+        if (!ResponseDB) {
+            res.status(200).send({ error:"User not found"});
+            return;
+        };
+        bcrypt.compare(oldPassword, ResponseDB.password, function(err, result) { //Check the old password
+            if (err) {throw err}
+            try {
+                if (result === false) {
+                    res.status(200).send({ error:"Password doesn't match"});
+                } else {
+                    bcrypt.hash(newPassword, 13, async function (err, hash) { // Encript the new password
+                        if (err) {
+                            throw err
+                        }
+                        try {
+                            const ResponseDB = await User.update( //Update the password
+                                { password: hash },
+                                { where: { id: idUser } }
+                            )
+                            res.status(200).send({message: "Password changed"});
+                        } catch (error) {
+                            res.status(400).send({
+                                error: "There was an error with verifyEmail",
+                                message: error.message,
+                                errorDetails: error
+                            })
+                        }
+                    });
+                }
+            } catch (error) {
+                res.status(400).send({
+                    error: "There was an error with verifyPassword",
+                    message: error.message,
+                    errorDetails: error
+                })
+            }
+        });
+    } catch (error) {
+        res.status(400).send({
+            error: "There was an error with verifyPassword",
             message: error.message,
             errorDetails: error
         })
@@ -306,4 +358,5 @@ export {
     verifyEmail,
     verifyUser_name,
     changeUserImage,
+    changePassword,
 }
