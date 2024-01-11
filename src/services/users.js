@@ -7,17 +7,17 @@ const User = sequelize.models.User
 const authenticationTokenKey = process.env.AUTHENTICATION_TOKEN_KEY
 
 //Temp
-import jsonData from "./users.json" assert { type: "json" };
+// import jsonData from "../necessary_test_information.json" assert { type: "json" };
 
 const getAllUsers = async( req, res ) => {
     try {
         const ResponseDB = await User.findAll({
             attributes: { exclude: ['password'] }
         });
-        if (ResponseDB.length === 0) {
-            const users = jsonData[0];
-            User.bulkCreate(users);
-        }
+        // if (ResponseDB.length === 0) {
+        //     const users = jsonData[0];
+        //     User.bulkCreate(users);
+        // }
         res.status(201).send(ResponseDB);
     } catch (error) {
         res.status(400).send({

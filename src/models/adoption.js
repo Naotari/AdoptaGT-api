@@ -47,10 +47,9 @@ const Adoption = (sequelize) => sequelize.define("Adoption", {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
-    state: {
-        type: DataTypes.ENUM,
-        values: ['Inactive', 'Active'],
-        defaultValue: 'Active',
+    phone: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
 },
 {

@@ -18,11 +18,6 @@ const Post = (sequelize) => sequelize.define("Post", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    state: {
-        type: DataTypes.ENUM,
-        values: ['Inactive', 'Active'],
-        defaultValue: 'Active',
-    },
 },
 {
     timestamps: true

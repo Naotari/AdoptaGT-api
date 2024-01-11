@@ -14,7 +14,7 @@ const getAllAdoptions = async( req, res ) => {
         res.status(400).send({
             error: "There was an error with getAllAdoptions",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 };
@@ -31,14 +31,14 @@ const getAdoption = async(req, res) => {
         res.status(400).send({
             error: "There was an error with getAdoption",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
 
 const postAdoption = async(req, res) => {
     try {
-        const {user_id, image, sex, name, age, years, text, vaccines} = req.body;
+        const {user_id, image, sex, name, age, years, text, vaccines, phone} = req.body;
         const ResponseDB = await Adoption.create({
             user_id,
             image,
@@ -48,6 +48,7 @@ const postAdoption = async(req, res) => {
             years,
             text,
             vaccines,
+            phone,
             adopted: false,
             user_adoption: null
         })
@@ -57,14 +58,14 @@ const postAdoption = async(req, res) => {
         res.status(400).send({
             error: "There was an error with postAdoption",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
 
 const updateAdoption = async(req, res) => {
     try {
-        const {idAdoption, text, state} = req.body;
+        const {idAdoption, sex, name, age, years, text, vaccines, adopted, state, phone} = req.body;
         const ResponseDB = await Post.update(
             {   
                 sex,
@@ -73,11 +74,12 @@ const updateAdoption = async(req, res) => {
                 years,
                 text,
                 vaccines,
-                adopted: false,
+                adopted,
+                phone,
                 state,
             },
             {
-                where: { id: idPost }
+                where: { id: idAdoption }
             }
         )
         res.status(201).send(ResponseDB);
@@ -85,7 +87,7 @@ const updateAdoption = async(req, res) => {
         res.status(400).send({
             error: "There was an error with updatePost",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
@@ -93,18 +95,21 @@ const updateAdoption = async(req, res) => {
 const deleteAdoption = async(req, res) => { 
     try {
         const idAdoption = req.params.idAdoption
-        const ResponseDB = await Adoption.destroy({
-            where: { id: idAdoption }
-        });
-        if (ResponseDB === 0) {
-            return res.status(201).send({state: "Adoption was not deleted"});
-        }
+
+        const adoptionDB = await Adoption.findByPk(idAdoption);
+        console.log(adoptionDB);
+        // const ResponseDB = await Adoption.destroy({
+        //     where: { id: idAdoption }
+        // });
+        // if (ResponseDB === 0) {
+        //     return res.status(201).send({state: "Adoption was not deleted"});
+        // }
         res.status(201).send({state: "Deleted"});
     } catch (error) {
         res.status(400).send({
             error: "There was an error with deleteAdoption",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
