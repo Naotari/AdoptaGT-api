@@ -3,6 +3,8 @@ import {
     getAllAdoptions,
     getAdoption,
     postAdoption,
+    updateAdoption,
+    deleteAdoption,
 } from '../services/adoptions.js';
 
 const adoptions = Router();
@@ -10,8 +12,8 @@ const adoptions = Router();
 adoptions.get("/", getAllAdoptions);
 adoptions.get("/:idAdoption", getAdoption);
 adoptions.post("/", postAdoption);
-// adoptions.put("/", updatePost);
-// adoptions.delete("/:idPost", deletePost);
+adoptions.put("/", updateAdoption);
+adoptions.delete("/:idAdoption", deleteAdoption);
 
 
 export default adoptions;

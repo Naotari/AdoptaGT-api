@@ -1,4 +1,5 @@
 import { sequelize } from "../db.js";
+import cloudinary from "cloudinary"
 
 const Post = sequelize.models.Post
 const User = sequelize.models.User
@@ -7,18 +8,15 @@ const getAllPosts = async( req, res ) => {
     try {
         const ResponseDB = await Post.findAll({
             include: [User],
+            order: [['createdAt', 'DESC']]
         });
-        // if (ResponseDB.length === 0) {
-            // const users = jsonData[0];
-            // User.bulkCreate(users);
-        // }
 
         res.status(201).send(ResponseDB);
     } catch (error) {
         res.status(400).send({
-            error: "There was an error with getAllPosts",
+            error: "There was an error with deleteUserImage",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 };
@@ -33,9 +31,9 @@ const getPost = async(req, res) => {
         res.status(201).send(ResponseDB);
     } catch (error) {
         res.status(400).send({
-            error: "There was an error with getPost",
+            error: "There was an error with deleteUserImage",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
@@ -52,9 +50,9 @@ const postPost = async(req, res) => {
         res.status(201).send({state: "Created"});
     } catch (error) {
         res.status(400).send({
-            error: "There was an error with postPost",
+            error: "There was an error with deleteUserImage",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
@@ -74,9 +72,9 @@ const updatePost = async(req, res) => {
         res.status(201).send(ResponseDB);
     } catch (error) {
         res.status(400).send({
-            error: "There was an error with updatePost",
+            error: "There was an error with deleteUserImage",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
@@ -84,18 +82,32 @@ const updatePost = async(req, res) => {
 const deletePost = async(req, res) => { 
     try {
         const idPost = req.params.idPost
+        const post = await Post.findByPk(idPost);
+        if (post === null) {
+            return res.status(404).send({state: "error", message: "Post was not found"});
+        }
+        if (post.image.length > 0) {
+            const imageURL = post.image
+            let assetName = imageURL.split("/")
+            assetName = assetName[9].split(".")
+            assetName = assetName[0]
+            const cloudinaryResponse = await cloudinary.v2.uploader.destroy("AdoptaGT/post_image/" + assetName)
+            if(cloudinaryResponse.result === "not found") {
+                return res.status(404).send({state: "error", message: "Image of the post was not found"});
+            };
+        }
         const ResponseDB = await Post.destroy({
             where: { id: idPost }
         });
         if (ResponseDB === 0) {
-            return res.status(201).send({state: "Post was not deleted"});
+            return res.status(500).send({state: "error", message: "Post was not deleted"});
         }
-        res.status(201).send({state: "Deleted"});
+        res.status(201).send({state: "ok", message:  "Post Deleted"});
     } catch (error) {
         res.status(400).send({
-            error: "There was an error with deletePost",
+            error: "There was an error with deleteUserImage",
             message: error.message,
-            error
+            errorDetails: error
         })
     }
 }
