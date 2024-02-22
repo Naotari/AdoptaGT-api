@@ -101,6 +101,7 @@
             "years": true,
             "text": "Es un perro muy bonito y bla blablablablabla blabl ablab lablabla blablablab lablabl ablabl ablablabl abla",
             "vaccines": "Todas",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -114,6 +115,7 @@
             "years": false,
             "text": "Nada que decir",
             "vaccines": "Tengo que ver como hacer para seleccionar vacunas",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -127,6 +129,7 @@
             "years": true,
             "text": "Prueba de texto muy largo donde se hace la descripcion del perro en cuestion pero necesito mas palabras asi que necesito seguir escribiendo para llenar todo el texto que pueda aunque no se me ocurre que escribir tenmgo que segir escribiendo para poder llemar el texto lo mnas que se pueda incluso con faltas de ortografia, y creo que con eso ya es suficiente.",
             "vaccines": "ninguna",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -140,6 +143,7 @@
             "years": false,
             "text": "ahora es otra descripcion solo para ver como actua.",
             "vaccines": "no se de vacunas de perros",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -153,6 +157,7 @@
             "years": true,
             "text": "ya no se que mas poner, no se que poner, no tengo ideal, que bonito perro",
             "vaccines": "la de la rabia me imagino",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -166,6 +171,7 @@
             "years": false,
             "text": "Es un perro alegre, no necesita ser entrenado y es muy jugueton con los niños",
             "vaccines": "ninguna creo",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -179,6 +185,7 @@
             "years": true,
             "text": "encontrado en la calle y recuperado para quye pueda tener una biena vida",
             "vaccines": "todas menos una",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -192,6 +199,7 @@
             "years": false,
             "text": "todavia faltan vatrios test y ya no se me occure que poner de descripcion",
             "vaccines": "no se cuales",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -205,6 +213,7 @@
             "years": true,
             "text": "pos no se, solo se que es buena onda",
             "vaccines": "tampoco se",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678
@@ -218,6 +227,7 @@
             "years": false,
             "text": "this text is in english to see if I can create a description in english, and I can, i don't know what else can I type, I think with that is enough.",
             "vaccines": "todas toditas",
+            "pet_type": "dog",
             "adopted": false,
             "user_adopted": null,
             "phone": 12345678

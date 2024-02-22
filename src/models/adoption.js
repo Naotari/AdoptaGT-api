@@ -18,6 +18,11 @@ const Adoption = (sequelize) => sequelize.define("Adoption", {
         type: DataTypes.ENUM,
         values: ['male', 'female'],
     },
+    pet_type: {
+        type: DataTypes.ENUM,
+        values: ['dog', 'cat', "rabbit", "hamster", "bird", "fish", "other"],
+        allowNull: false,
+    },
     name: {
         type: DataTypes.TEXT,
         allowNull: false,

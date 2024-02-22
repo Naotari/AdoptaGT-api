@@ -41,7 +41,7 @@ const getAdoption = async(req, res) => {
 
 const postAdoption = async(req, res) => {
     try {
-        const {user_id, image, sex, name, age, years, text, vaccines, phone} = req.body;
+        const {user_id, image, sex, name, age, years, text, vaccines, pet_type, phone} = req.body;
         const ResponseDB = await Adoption.create({
             user_id,
             image,
@@ -51,6 +51,7 @@ const postAdoption = async(req, res) => {
             years,
             text,
             vaccines,
+            pet_type,
             phone,
             adopted: false,
             user_adoption: null
@@ -68,7 +69,7 @@ const postAdoption = async(req, res) => {
 
 const updateAdoption = async(req, res) => {
     try {
-        const {idAdoption, sex, name, age, years, text, vaccines, adopted, state, phone} = req.body;
+        const {idAdoption, sex, name, age, years, text, vaccines, pet_type, adopted, state, phone} = req.body;
         const ResponseDB = await Adoption.update(
             {   
                 sex,
@@ -77,6 +78,7 @@ const updateAdoption = async(req, res) => {
                 years,
                 text,
                 vaccines,
+                pet_type,
                 adopted,
                 phone,
                 state,
@@ -129,10 +131,42 @@ const deleteAdoption = async(req, res) => {
     }
 }
 
+const adoptionCount = async(req , res) => {
+    try {
+        const adoptionNumber = await Adoption.findAll();
+        console.log(adoptionNumber.length);
+
+        res.status(201).send({state: "ok", message:  adoptionNumber.length});
+    } catch (error) {
+        res.status(400).send({
+            error: "There was an error with adoptionCount",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
+const adoptedPetsCount = async(req , res) => {
+    try {
+        const adoptionNumber = await Adoption.findAll({
+            where: { adopted: true }
+        });
+        res.status(201).send({state: "ok", message:  adoptionNumber.length});
+    } catch (error) {
+        res.status(400).send({
+            error: "There was an error with adoptionCount",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
 export {
     getAllAdoptions,
     getAdoption,
     postAdoption,
     updateAdoption,
     deleteAdoption,
+    adoptionCount,
+    adoptedPetsCount,
 }
