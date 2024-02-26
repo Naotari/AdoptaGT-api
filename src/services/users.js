@@ -14,13 +14,9 @@ const getAllUsers = async( req, res ) => {
         const ResponseDB = await User.findAll({
             attributes: { exclude: ['password'] }
         });
-        // if (ResponseDB.length === 0) {
-        //     const users = jsonData[0];
-        //     User.bulkCreate(users);
-        // }
-        res.status(201).send(ResponseDB);
+        res.status(200).send({state: "ok", content: ResponseDB});
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with getAllUsers",
             message: error.message,
             errorDetails: error
@@ -35,11 +31,11 @@ const getUser = async(req, res) => {
             attributes: { exclude: ['password'] }
         });
         if (ResponseDB === null) {
-            return res.status(201).send({state: "User not found"});
+            return res.status(201).send({state: "error", content: "User not found"});
         };
-        res.status(201).send(ResponseDB);
+        res.status(200).send({state: "ok", content: ResponseDB});
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with getUser",
             message: error.message,
             errorDetails: error
@@ -68,35 +64,23 @@ const postUser = async(req, res) => {
                     role: role || "user"
                 })
                 // console.log(ResponseDB);
-                res.status(201).send({status: "OK", message:"The user was created"});
+                res.status(201).send({state: "ok", content:"The user was created"});
                 
             } catch (error) {
                 if (error.errors[0].message === "email must be unique") {
-                    res.status(400).send({
-                        error: "There was an error with postUser",
-                        message: error.errors[0].message,
-                        errorDetails: error
-                    })
+                    res.status(400).send({state: "ok", content: error.errors[0].message})
                 }
                 else if (error.errors[0].message === "user_name must be unique") {
-                    res.status(400).send({
-                        error: "There was an error with postUser",
-                        message: error.errors[0].message,
-                        errorDetails: error
-                    })
+                    res.status(400).send({state: "ok", content: error.errors[0].message})
                 }
                 else {
-                    res.status(400).send({
-                        error: "There was an error with postUser",
-                        message: error.message,
-                        errorDetails: error
-                    })
+                    res.status(400).send({state: "ok", content: error.errors[0].message})
                 }
             }
         });
     } catch (error) {
-        res.status(400).send({
-            error: "There was an error Encripting password",
+        res.status(500).send({
+            error: "There was an error with postUser",
             message: error.message,
             errorDetails: error
         })
@@ -120,9 +104,9 @@ const updateUser = async(req, res) => {
                 where: { id: idUser }
             }
         )
-        res.status(201).send(ResponseDB);
+        res.status(201).send({state: "ok", content: ResponseDB});
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with updateUser",
             message: error.message,
             errorDetails: error
@@ -137,12 +121,12 @@ const deleteUser = async(req, res) => {
             where: { id: idUser }
         });
         if (ResponseDB === 0) {
-            res.status(201).send({status:"error", message:"was not deleted"});
+            res.status(400).send({state: "error", content: "was not deleted"});
             return;
         }
-        res.status(201).send({status:"ok", message:"Deleted"});
+        res.status(200).send({state: "ok", content: "Deleted"});
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with deleteUser",
             message: error.message,
             errorDetails: error
@@ -156,20 +140,20 @@ const loginUser = async(req, res) => {
         const ResponseDB = await User.findOne({ where: { email: email } });
         
         if (!ResponseDB) {
-            res.status(200).send({ status: "error", error:"User not found"});
+            res.status(404).send({ state: "error", content: "User not found"});
             return;
         }
         bcrypt.compare(password, ResponseDB.password, function(err, result) {
             if (err) {throw err}
             try {
                 if (result === false) {
-                    res.status(200).send({ status: "error", error: "Incorrect password"});
+                    res.status(400).send({ state: "error", content: "Incorrect password"});
                 } else {
                     const accessToken = jwt.sign(email, authenticationTokenKey)
-                    res.status(200).send({status: "ok", accessToken: accessToken});
+                    res.status(200).send({state: "ok", content: {accessToken: accessToken}});
                 }
             } catch (error) {
-                res.status(400).send({
+                res.status(500).send({
                     error: "There was an error with loginUser",
                     message: error.message,
                     errorDetails: error
@@ -178,7 +162,7 @@ const loginUser = async(req, res) => {
         });
         
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with loginUser",
             message: error.message,
             errorDetails: error
@@ -194,13 +178,17 @@ const verifyUser = async(req, res) => {
         const verification = await User.findOne({ where: { email: user } });
         console.log(verification);
         if (verification) {
-            res.status(201).send({idUser: verification.id});
+            res.status(200).send({ state: "ok", content: {idUser: verification.id}});
             return
         } else {
-            res.status(201).send({error: "user not found"});
+            res.status(404).send({ state: "error", content: "user not found"});
         }
     } catch (error) {
-        console.log(error);
+        res.status(500).send({
+            error: "There was an error with verifyUser",
+            message: error.message,
+            errorDetails: error
+        })
     }
 }
 
@@ -209,13 +197,13 @@ const verifyEmail = async(req, res) => {
     try {
         const response = await User.findOne({ where: { email } })
         if (response) {
-            res.status(201).send({message: "There is already a user with that email"});
+            res.status(400).send({ state: "error", content: "There is already a user with that email"});
             return
         } else {
-            res.status(201).send({message: "You can use this email"});
+            res.status(200).send({ state: "ok", content: "You can use this email"});
         }
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with verifyEmail",
             message: error.message,
             errorDetails: error
@@ -225,19 +213,23 @@ const verifyEmail = async(req, res) => {
 
 const changePassword = async(req, res) => {
     const {oldPassword, newPassword, idUser} = req.body;
+    if (newPassword === "") {
+        res.status(400).send({ state: "error", content: "Password not allowed"});
+        return;
+    };
     try {
         const ResponseDB = await User.findByPk(idUser, { //Search the user
             attributes: ['password']
         });
         if (!ResponseDB) {
-            res.status(200).send({ error:"User not found"});
+            res.status(404).send({ state: "error", content: "User not found"});
             return;
         };
         bcrypt.compare(oldPassword, ResponseDB.password, function(err, result) { //Check the old password
             if (err) {throw err}
             try {
                 if (result === false) {
-                    res.status(200).send({ error:"Password doesn't match"});
+                    res.status(400).send({ state: "error", content: "Password doesn't match"});
                 } else {
                     bcrypt.hash(newPassword, 13, async function (err, hash) { // Encript the new password
                         if (err) {
@@ -248,9 +240,9 @@ const changePassword = async(req, res) => {
                                 { password: hash },
                                 { where: { id: idUser } }
                             )
-                            res.status(200).send({message: "Password changed"});
+                            res.status(201).send({ state: "ok", content: "Password changed"});
                         } catch (error) {
-                            res.status(400).send({
+                            res.status(500).send({
                                 error: "There was an error with verifyEmail",
                                 message: error.message,
                                 errorDetails: error
@@ -259,7 +251,7 @@ const changePassword = async(req, res) => {
                     });
                 }
             } catch (error) {
-                res.status(400).send({
+                res.status(500).send({
                     error: "There was an error with verifyPassword",
                     message: error.message,
                     errorDetails: error
@@ -267,7 +259,7 @@ const changePassword = async(req, res) => {
             }
         });
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with verifyPassword",
             message: error.message,
             errorDetails: error
@@ -281,13 +273,13 @@ const verifyUser_name = async(req, res) => {
     try {
         const response = await User.findOne({ where: { user_name } })
         if (response) {
-            res.status(201).send({message: "There is already a user with that user_name"});
+            res.status(400).send({ state: "error", content: "There is already a user with that user_name"});
             return
         } else {
-            res.status(201).send({message: "You can use this user_name"});
+            res.status(200).send({ state: "ok", content: "You can use this user_name"});
         }
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with verifyUser_name",
             message: error.message,
             errorDetails: error
@@ -303,10 +295,9 @@ const deleteUserImage = async(req, res) => {
         assetName = assetName[0]
         console.log(assetName);
         cloudinary.v2.uploader.destroy("AdoptaGT/user_image/" + assetName)
-        .then(result => res.status(201).send(result));
-        // res.status(201).send({message: "Fue elimiando"});
+        .then(result => res.status(200).send({ state: "ok", content: result}));
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with deleteUserImage",
             message: error.message,
             errorDetails: error
@@ -335,9 +326,9 @@ const changeUserImage = async(req, res) => {
             }
         )
         console.log(ResponseDB);
-        res.status(201).send("funciona")
+        res.status(201).send({ state: "ok", content: "Image changed"})
     } catch (error) {
-        res.status(400).send({
+        res.status(500).send({
             error: "There was an error with changeUserImage",
             message: error.message,
             errorDetails: error
