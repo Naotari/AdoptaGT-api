@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken"
 import { sequelize } from "../db.js";
 import bcrypt from "bcrypt";
 import cloudinary from "cloudinary"
+import nodemailer from "nodemailer"
 
 const User = sequelize.models.User
 const authenticationTokenKey = process.env.AUTHENTICATION_TOKEN_KEY
@@ -142,6 +143,9 @@ const loginUser = async(req, res) => {
         if (!ResponseDB) {
             res.status(404).send({ state: "error", content: "User not found"});
             return;
+        } else if (ResponseDB.state === "Inactive") {
+            res.status(403).send({ state: "error", content: "User was disabled"});
+            return;
         }
         bcrypt.compare(password, ResponseDB.password, function(err, result) {
             if (err) {throw err}
@@ -176,7 +180,11 @@ const verifyUser = async(req, res) => {
         const user = jwt.verify(token, authenticationTokenKey)
         console.log(user);
         const verification = await User.findOne({ where: { email: user } });
-        console.log(verification);
+        console.log(verification.state);
+        if (verification.state === "Inactive") {
+            res.status(403).send({ state: "error", content: "User was disabled"});
+            return
+        }
         if (verification) {
             res.status(200).send({ state: "ok", content: {idUser: verification.id}});
             return
@@ -336,6 +344,91 @@ const changeUserImage = async(req, res) => {
     }
 }
 
+const recoveryEmailVerification = async(req, res) => {
+    const {email} = req.body;
+    try {
+        const response = await User.findOne({ where: { email } })
+        if (response) {
+            if (response.state === "Inactive") {
+                res.status(403).send({ state: "error", content: "Email Inactive"});
+                return
+            }
+            const accessToken = jwt.sign({email: email}, authenticationTokenKey, { expiresIn : "1h"})
+            const urlRecovery = `http://localhost:5173/password_reset/${accessToken}/`
+            const transporter = nodemailer.createTransport({
+            host: "smtp.zoho.com",
+            port: 465,
+            secure: true, // use TLS
+            auth: {
+                user: process.env.EMAIL_SERVICE_EMAIL,
+                pass: process.env.EMAIL_SERVICE_PASSWORD,
+            },
+              });
+            const info = await transporter.sendMail({
+                from: '"Adopta GT" <soporteadoptagt@zohomail.com>', // sender address
+                to: email, // list of receivers
+                subject: "Recuperacion de contraseña", // Subject line
+                text: "Si ve esto necesita visualizar el correo desde un dispositivo compatible.", // plain text body
+                html: `<div>
+                    <p>Hola, este es un correo para restarurar la contraseña de Adopta GT </br>
+                    Ingresa al siguiente link para asignar tu nueva contraseña:</p>
+                    <a href=${urlRecovery}>Cambiar Contraseña</a>
+                    <br></br>
+                    <p>Esta link de restauracion de contraseña solo funcionara por 1 hora.</p>
+                    <br></br>
+                    <br></br>
+                    <p>Adopta GT</p>
+                </div>`, // html body
+            });
+            res.status(200).send({ state: "ok", content: info.response});
+            return
+        } else {
+            res.status(404).send({ state: "error", content: "Email not found"});
+        }
+    } catch (error) {
+        res.status(500).send({
+            error: "There was an error with recoveryEmailVerification",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
+const recoveryPasswordReset = async(req, res) => {
+    try {
+        const {password, token} = req.body;
+        const user = jwt.verify(token, authenticationTokenKey)
+        const ResponseDB = await User.findOne({ where: { email: user.email }, attributes: ['password'] }); //Search the user
+        console.log(ResponseDB, token);
+        bcrypt.hash(password, 13, async function (err, hash) { // Encript the new password
+            if (err) throw err
+            try {
+                const ResponseDB = await User.update( //Update the password
+                { password: hash },
+                { where: { email: user.email } }
+                )
+                res.status(201).send({ state: "ok", content: "Password changed"});
+            } catch (error) {
+                res.status(500).send({
+                    error: "There was an error with verifyEmail",
+                    message: error.message,
+                    errorDetails: error
+                })
+            }
+        });
+    } catch (error) {
+        if (error.message === "jwt expired") {
+            res.status(401).send({ state: "error", content: "Expired token"})
+            return
+        }
+        res.status(500).send({
+            error: "There was an error with recoveryPasswordReset",
+            message: error.message,
+            errorDetails: error
+        })
+    }
+}
+
 
 export {
     getAllUsers,
@@ -350,4 +443,6 @@ export {
     verifyUser_name,
     changeUserImage,
     changePassword,
+    recoveryEmailVerification,
+    recoveryPasswordReset,
 }
