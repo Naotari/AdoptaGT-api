@@ -7,9 +7,6 @@ import nodemailer from "nodemailer"
 const User = sequelize.models.User
 const authenticationTokenKey = process.env.AUTHENTICATION_TOKEN_KEY
 
-//Temp
-// import jsonData from "../necessary_test_information.json" assert { type: "json" };
-
 const getAllUsers = async( req, res ) => {
     try {
         const ResponseDB = await User.findAll({
@@ -333,7 +330,6 @@ const changeUserImage = async(req, res) => {
                 where: { id: req.body.idUser }
             }
         )
-        console.log(ResponseDB);
         res.status(201).send({ state: "ok", content: "Image changed"})
     } catch (error) {
         res.status(500).send({
@@ -354,7 +350,7 @@ const recoveryEmailVerification = async(req, res) => {
                 return
             }
             const accessToken = jwt.sign({email: email}, authenticationTokenKey, { expiresIn : "1h"})
-            const urlRecovery = `http://localhost:5173/password_reset/${accessToken}/`
+            const urlRecovery = `${process.env.CLIENT_URL}password_reset/${accessToken}/`
             const transporter = nodemailer.createTransport({
             host: "smtp.zoho.com",
             port: 465,
